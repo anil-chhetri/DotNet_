@@ -1,0 +1,57 @@
+﻿@page
+@model PLFundamentals.Pages.Restaurants.ListModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1> Restaurants </h1>
+
+
+<form method="get">
+    <div class="form-group">
+        <div class="input-group">
+            <input class="form-control" asp-for="SearchTerm" type="search" placeholder="Search Restaurant" />
+            <span class="input-group-btn">
+                <button class="btn btn-success">
+                    <i class="">Search</i>
+                </button>
+            </span>
+        </div>
+    </div>
+</form>
+
+@*<table class="table table-hover">
+        @foreach (var item in Model.Restaurants)
+        {
+        <tr>
+            <td> @item.Name </td>
+            <td> @item.Location </td>
+            <td> @item.Cuisines</td>
+            <td>
+                <a class="btn btn-info" asp-page="Detail" asp-route-RestaurantID="@item.Id">
+                    Details
+                </a>
+                <a class="btn btn-info" asp-page="Edit" asp-route-RestaurantID="@item.Id">
+                    Edit
+                </a>
+                <a class="btn btn-info" asp-page="Delete" asp-route-RestaurantID="@item.Id">
+                    Delete
+                </a>
+            </td>
+
+        </tr>
+        }
+    </table>*@
+
+
+
+@* using partial view *@
+
+@foreach (var restaurant in Model.Restaurants)
+{
+    <partial name="_Summary" model="restaurant" />
+}
+
+
+
+<a asp-page="./Edit" class="btn btn-primary">Create New</a>

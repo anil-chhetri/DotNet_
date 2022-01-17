@@ -1,0 +1,38 @@
+﻿@page "{restaurantId:int?}"
+@model PLFundamentals.Pages.Restaurants.EditModel
+@{
+}
+
+
+<h2> Editing @Model.Restaurant.Name </h2>
+
+<form method="post">
+
+    <input hidden asp-for="Restaurant.Id" />
+
+    <div class="form-group">
+        <label asp-for="Restaurant.Name"> </label>
+        <input asp-for="Restaurant.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="Restaurant.Name"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Restaurant.Location"> </label>
+        <input asp-for="Restaurant.Location" class="form-control" />
+        <span class="text-danger" asp-validation-for="Restaurant.Location"></span>
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Restaurant.Cuisines"></label>
+        <select asp-for="Restaurant.Cuisines" asp-items="Model.CuisinesItems" class="form-control">
+        </select>
+        <span class="text-danger" asp-validation-for="Restaurant.Cuisines"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" > Save </button>
+    </div>
+
+</form>
+
+<a class="btn btn-secondary text-white" asp-page="./List"> See all Restaurant</a>

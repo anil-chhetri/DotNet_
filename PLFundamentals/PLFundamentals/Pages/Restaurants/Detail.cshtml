@@ -1,0 +1,35 @@
+﻿@page "{RestaurantID:int}"
+@model PLFundamentals.Pages.Restaurants.DetailModel
+@{
+}
+
+<h1> @Model.Restaurant.Name </h1>
+<hr />
+
+<div>
+    Id: @Model.Restaurant.Id
+</div>
+
+
+<div>
+    Name: @Model.Restaurant.Name
+</div>
+
+
+<div>
+    Location: @Model.Restaurant.Location
+</div>
+
+
+<div>
+    Cuisines: @Model.Restaurant.Cuisines
+</div>
+
+
+@if (Model.Message != null)
+{
+    <div class="alert alert-primary">@Model.Message</div>
+}
+
+
+<a asp-page="./List" class="btn btn-primary"> All Restaurant </a>

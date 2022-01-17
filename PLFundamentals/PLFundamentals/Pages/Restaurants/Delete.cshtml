@@ -1,0 +1,25 @@
+﻿@page
+@model PLFundamentals.Pages.Restaurants.DeleteModel
+@{
+    Layout = null;
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    
+    <h2> Delete! </h2>
+    <div class="alert alert-danger">
+        Are you sure you want to delete @Model.Restaurant.Name ?
+    </div> 
+    <form method="post">
+        <button type="submit" class="btn btn-danger"> Yes! </button>
+        <a asp-page="List" class="btn btn-primary" > Cancel </a>
+    </form>
+</body>
+</html>

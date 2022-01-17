@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title> SPA </title>
+    <link href="style.css" rel="stylesheet" />
+    <script src="Scripts/jquery-3.6.0.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+    <div id="createList">
+        <h1> Simple Shopping List.</h1>
+        <input id="shoppingListName" type="text" placeholder="new list " />
+        <button onclick="createShoppingList()"> Create </button>
+    </div>
+
+
+    <div id="shoppingListDiv" style="display: none;">
+       <h1 id="shoppingListTitle"> New List </h1>
+       <input id="newItemName" type="text" placeholder="New Item" />
+       <button onclick="addItem()"> Add </button>
+        <ul id="shoppingListItem">
+            <li> Salad <button> C </button> <button> D </button> </li>
+            <li> Milk <button> C </button> <button> D </button> </li>
+            <li> Tomatos <button> C </button> <button> D </button> </li>
+        </ul>
+    </div>
+
+</body>
+</html>

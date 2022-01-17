@@ -1,0 +1,30 @@
+﻿@using PLFundamentals.Core
+@model Restaurant
+
+
+<div class="card mb-3">
+    <div class="card-header">
+        @* header *@
+        <h3> @Model.Name </h3>
+    </div>
+
+    <div class="card-body">
+        @* body *@
+        <span> Location: @Model.Location </span>
+        <span> Cuisine: @Model.Cuisines </span>
+
+    </div>
+
+    <div class="card-footer text-right">
+        @* footer *@
+        <a class="btn btn-outline-primary" asp-page="Detail" asp-route-RestaurantID="@Model.Id">
+            Details
+        </a>
+        <a class="btn btn-outline-secondary" asp-page="Edit" asp-route-RestaurantID="@Model.Id">
+            Edit
+        </a>
+        <a class="btn btn-danger" asp-page="Delete" asp-route-RestaurantID="@Model.Id">
+            Delete
+        </a>
+    </div>
+</div>
