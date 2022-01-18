@@ -30,6 +30,8 @@ namespace ODataExamples
             //services.AddOData(options =>
             //        options.Filter().Expand().Select().OrderBy().AddModel("odata", GetEdmModel()));
 
+
+            //add nuget packages for Microsoft.AspNetCore.OData
             services.AddControllers()
                 .AddOData(opt => opt.Filter().Expand().Select().OrderBy().AddRouteComponents("odata", GetEdmModel())); 
         }
