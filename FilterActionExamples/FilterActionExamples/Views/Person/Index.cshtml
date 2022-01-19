@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Person>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <a class="btn btn-primary" asp-action="create"> Create New</a>
+        </div>
+    </div>
+
+    <div class="row">
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th> Name </th>
+                <th> Address </th>
+                <th> Date of Birth </th>
+            </tr>
+        </thead>
+        @foreach (var person in Model)
+        {
+            <tbody>
+                <tr>
+                    <td> @person.Name </td>
+                    <td> @person.Address </td>
+                    <td> @person.DateOfBirth.ToShortDateString() </td>
+                </tr>
+            </tbody>
+        }
+    </div>
+    </table>
+</div>

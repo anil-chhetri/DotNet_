@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using FilterActionExamples.Filters;
+using FilterActionExamples.Filters.ActionFilters;
 
 namespace FilterActionExamples.Controllers
 {
+    [ResourceFilterExamples]
+    [ActionFilterExample]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,11 +22,15 @@ namespace FilterActionExamples.Controllers
             _logger = logger;
         }
 
+        
+
         public IActionResult Index()
         {
             return View();
         }
 
+        [ServiceFilter(typeof(ResourceFilterAsync))]
+        // when we register it as a server.
         public IActionResult Privacy()
         {
             return View();

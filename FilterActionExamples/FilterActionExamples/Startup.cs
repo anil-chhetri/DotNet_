@@ -1,6 +1,10 @@
+using FilterActionExamples.Filters;
+using FilterActionExamples.services;
+using FilterActionExamples.services.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +27,19 @@ namespace FilterActionExamples
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddControllersWithViews(options => {
+            //    options.Filters.Add(typeof(RequestFilterAsync));
+            // // In this case filter is automatically applicated to all the controllers.
+            //});
+
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("default")));
+
+            services.AddScoped<IPersonRepository, PersonRepository>();
+
+            services.AddScoped<ResourceFilterAsync>();
+
             services.AddControllersWithViews();
         }
 
