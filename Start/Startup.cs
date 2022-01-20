@@ -33,6 +33,8 @@ namespace UserManagement
                 .AddSimulatedAuthentication(
                     userNameidentifier: "foo.bar", // Will be written into ClaimTypes.NameIdentifier
                     userRole: "administrator");    // Will be written into ClaimTypes.Role
+
+
             services.AddControllers();
         }
 
