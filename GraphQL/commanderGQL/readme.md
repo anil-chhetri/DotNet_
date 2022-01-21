@@ -9,7 +9,7 @@
 
 <br>
 <hr>
-<br >
+<br>
 
 
 # GraphQL: 
@@ -38,7 +38,7 @@ GraphQL is not tied to any specific database or storage engine and is instead ba
   * Boolean
   * Float
 - Objects
-    ```
+    ```graphql
     type: car {
         id: ID!
         make: String!
@@ -51,7 +51,6 @@ GraphQL is not tied to any specific database or storage engine and is instead ba
 -  Subscriptioin
 -  Mutation
 -  Query
-- 
 
 ### Resolvers
 Resolvers returns data for a given fields.
@@ -64,32 +63,28 @@ A resolver is a function that is responsible for populating the data for a singl
   - GraphQL.net (Open Source)
   - HotChocolate (Open Source)
 
-  ```
+  ```console
   dotnet new web-n commanderGQL  # create blank project
-
-  # Code to added necessary nuget package using .net CLI
-    
-  - Nuget package that are required of Hot Chocolate.
-
+  ```
+  **Code to added necessary nuget package using .net CLI** <br>
+  *Nuget package that are required of Hot Chocolate.*
+  ```console  
   dotnet add package HotChocolate.AspNetCore --version 12.5.0
   dotnet add package HotChocolate.Data.EntityFramework --version 12.5.0
 
-  --
   dotnet add package GraphQL.Server.Ui.Voyager --version 5.2.0
-
-
-  -Nuget package requried for EF core.
-
-  dotnet add package Microsoft.EntityFrameworkCore.Design --version 5.0.9
-
-
-  ----------------------
-  # vs code extract: 
-    
-  code -r folderName # this will open folder from vscode.
-  -------------------
-
   ```
+
+  **Nuget package requried for EF core.**
+```console
+  dotnet add package Microsoft.EntityFrameworkCore.Design --version 5.0.9
+```
+
+  **vs code extract:**
+
+```console
+  code -r folderName # this will open folder from vscode.
+```
 
 
 
