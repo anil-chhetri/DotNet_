@@ -64,6 +64,37 @@ A resolver is a function that is responsible for populating the data for a singl
   - GraphQL.net (Open Source)
   - HotChocolate (Open Source)
 
+  ```
+  dotnet new web-n commanderGQL  # create blank project
+
+  # Code to added necessary nuget package using .net CLI
+    
+  - Nuget package that are required of Hot Chocolate.
+
+  dotnet add package HotChocolate.AspNetCore --version 12.5.0
+  dotnet add package HotChocolate.Data.EntityFramework --version 12.5.0
+
+  --
+  dotnet add package GraphQL.Server.Ui.Voyager --version 5.2.0
+
+
+  -Nuget package requried for EF core.
+
+  dotnet add package Microsoft.EntityFrameworkCore.Design --version 5.0.9
+
+
+  ----------------------
+  # vs code extract: 
+    
+  code -r folderName # this will open folder from vscode.
+  -------------------
+
+  ```
+
+
+
+
+
 
 
 
