@@ -5,6 +5,9 @@
     - [Types](#types)
     - [Resolvers](#resolvers)
   - [GraphQL in .Net:](#graphql-in-net)
+  - [Code snippets for GraphQL:](#code-snippets-for-graphql)
+    - [Use of DbContextPool and changes mades to query class](#use-of-dbcontextpool-and-changes-mades-to-query-class)
+  - [defininig Query](#defininig-query)
 
 
 <br>
@@ -76,18 +79,24 @@ A resolver is a function that is responsible for populating the data for a singl
   ```
 
   **Nuget package requried for EF core.**
-```console
+  ```console
   dotnet add package Microsoft.EntityFrameworkCore.Design --version 5.0.9
-```
+  ```
 
   **vs code extract:**
 
-```console
+  ```console
   code -r folderName # this will open folder from vscode.
-```
+  ```
 
 
+## Code snippets for GraphQL: 
 
+
+### Use of DbContextPool and changes mades to query class
+
+
+## defininig Query
 
 
 
