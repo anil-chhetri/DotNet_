@@ -7,7 +7,10 @@
   - [GraphQL in .Net:](#graphql-in-net)
   - [Code snippets for GraphQL:](#code-snippets-for-graphql)
     - [Use of DbContextPool and changes mades to query class](#use-of-dbcontextpool-and-changes-mades-to-query-class)
-  - [defininig Query](#defininig-query)
+  - [Defininig Query](#defininig-query)
+  - [Adding Graphql description in EF core Models.](#adding-graphql-description-in-ef-core-models)
+  - [Adding Graphql description in types](#adding-graphql-description-in-types)
+  - [Mutations](#mutations)
 
 
 <br>
@@ -91,13 +94,179 @@ A resolver is a function that is responsible for populating the data for a singl
 
 
 ## Code snippets for GraphQL: 
+To use graphql in our project first we should register our graphql service in `startup.cs` file.
+```csharp
+  services.AddGraphQLServer()
+```
+Also in middleware section in `startup.cs` we use provide endpoints for our graphql using following code.
+```csharp
+   app.UseEndpoints(endpoints => { endpoints.MapGraphQL(); });
+```
+if we want to see the Voyager UI than add the following endpoints.
+```csharp 
+   app.UseGraphQLVoyager(new VoyagerOptions() { GraphQLEndPoint="/graphql" }, path: "/graphql-voyager")
+```
 
+Since Graphql is not bound to any language or framework, it is not adept at understanding the CLR classes. i.e c# POCO Classes. So in graphql we should expose our domain class using types.
 
 ### Use of DbContextPool and changes mades to query class
 
+Adding our application context to the services
+```csharp
+        //this services provide error if we run multiples queries simualtanesouly.
+        services.AddDbContext<ApplicationDbContext>(options => {
+                options
+                .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+                .UseSqlServer(Configuration.GetConnectionString("default"));
+        });
+```
+The fault with this type of registering our DbContext is that we cannot run multiples queries simualtanesouly. To overcome this we will register our DbContext with `AddPooledDbContextFactory`. 
 
-## defininig Query
+```csharp
+ services.AddPooledDbContextFactory<ApplicationDbContext>(options => {
+                options
+                    .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+                    .EnableSensitiveDataLogging()
+                    .UseSqlServer(Configuration.GetConnectionString("default"));
+            });
+```
 
+## Defininig Query
+To expose our data through the graphql API, we can do that using a QueryType. For doing this we should declare a class that expose our model and register that class in `startup.cs`
+
+content of Query.cs
+```csharp
+ public class Query
+    {
+
+        //added to support DbcontextPool
+        [UseDbContext(typeof(ApplicationDbContext))]
+        // [UseProjection]  // used to get the foreign key refrenced tables data.
+        public IQueryable<Platform> GetPlatforms([ScopedService] ApplicationDbContext context)
+            //creating the scoped Dependency Imjection services
+        {
+            return context.Platforms;
+        }
+
+        
+        [UseDbContext(typeof(ApplicationDbContext))]
+        // [UseProjection]
+        public IQueryable<Command> GetCommands([ScopedService] ApplicationDbContext context)
+        {
+            return context.Commands;
+        }
+
+    }
+```
+
+now to register our type class add the following code to `startup.cs` class, here we are adding code where we previously registered our graphql server. 
+```csharp
+   services
+      .AddGraphQLServer()
+      .AddQueryType<Query>()
+```
+
+whenever we add functionality to our `Query.cs` or our graphql file we need to registered those functionality to our services. for example if I add projection, sorting, and filtering functionality to graphql,  our code looks something like this.
+
+```csharp
+    ....
+        [UseDbContext(typeof(ApplicationDbContext))]
+        [UseFiltering]
+        [UseSorting]
+        [UseProjection]  // used to get the foreign key refrenced tables data.
+        public IQueryable<Platform> GetPlatforms([ScopedService] ApplicationDbContext context)
+            //creating the scoped Dependency Imjection services
+        {
+            return context.Platforms;
+        }
+
+    .....
+```
+
+and our `startup.cs` looks something like this:
+```csharp
+  services
+        .AddGraphQLServer()
+        .AddQueryType<Query>()
+        .AddProjections()  //use to add UseProjection in qurey.cs
+        .AddFiltering()
+        .AddSorting()
+```
+
+## Adding Graphql description in EF core Models.
+We can also add descriiption to our EF core model class that we are exposing and provide details about that class or the column(property) present in that class and their purpose. It is fairly easy to do so, all we need to do is add `` attributes to our class and properties.
+
+```csharp
+    [GraphQLDescription(@"Represent the command and howto perform those command.")]
+    public class Command
+    {
+        [Required]
+        public int Id { get; set; }
+        [Required]
+        public string HowTo { get; set; }
+        [Required]
+        [GraphQLDescription("Command to run on command line interface.")]
+        public string CommandText { get; set; }
+        [Required]
+        public int PlatformId { get; set; }
+        public Platform Platform { get; set; }
+    }
+```
+## Adding Graphql description in types
+In our above code we see that both our DataAnnotation and GraphQl description are in single file which may clutter our ef data model. 
+so next way of doing that will be creating types. In graphql types are used to specify the fields of the domain classes you would like to expose. To create a type in graphql we should create a class that extends from `ObjectGraphType<T>` where T is our ef model class.
+
+```csharp
+ public class PlatformType : ObjectType<Platform>
+    {
+        protected override void Configure(IObjectTypeDescriptor<Platform> descriptor)
+        {
+            descriptor.Field(p => p.LicenseKey).Ignore();
+
+            descriptor
+                .Field(p => p.Commands)
+                .ResolveWith<PlatformResolver>(c => c.GetCommands(default, default))
+                .UseDbContext<ApplicationDbContext>();
+        }
+    }
+
+    public class PlatformResolver
+    {
+        public IQueryable<Command> GetCommands([Parent] Platform platform, [ScopedService] ApplicationDbContext context)
+        {
+            return context.Commands.Where(x => x.PlatformId == platform.Id);
+        }
+    }
+```
+Also, In graphql types we can choose the fields that we are going to expose in addition to adding description, add our own resolver and others things. And just like our functionality we should register our type in `startup.cs` file. 
+
+```csharp
+ services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddType<PlatformType>()
+    .AddType<CommandTypes>()
+    .AddFiltering()
+    .AddSorting()
+```
+
+## Mutations 
+
+Mutation is way of adding, updating and delete data in graphql. To add mutation capability to our graphql, we add a class that have methods to add records to our database and then we register that to `startup.cs`.
+
+```csharp
+services
+  .AddGraphQLServer()
+  .AddQueryType<Query>()
+  .AddType<PlatformType>()
+  .AddType<CommandTypes>()
+  // .AddType<PlTypes>()
+  // .AddProjections()  //use to add UseProjection in qurey.cs
+  .AddFiltering()
+  .AddSorting()
+  .AddMutationType<Mutations>()
+  ;
+```
 
 
 

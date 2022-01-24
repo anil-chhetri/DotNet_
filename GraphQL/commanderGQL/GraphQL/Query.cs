@@ -11,7 +11,9 @@ namespace commanderGQL.GraphQL
 
         //added to support DbcontextPool
         [UseDbContext(typeof(ApplicationDbContext))]
-        [UseProjection]  // used to get the foreign key refrenced tables data.
+        [UseFiltering]
+        [UseSorting]
+        // [UseProjection]  // used to get the foreign key refrenced tables data.
         public IQueryable<Platform> GetPlatforms([ScopedService] ApplicationDbContext context)
             //creating the scoped Dependency Imjection services
         {
@@ -20,7 +22,9 @@ namespace commanderGQL.GraphQL
 
         
         [UseDbContext(typeof(ApplicationDbContext))]
-        [UseProjection]
+        // [UseProjection]
+        [UseFiltering]
+        [UseSorting]
         public IQueryable<Command> GetCommands([ScopedService] ApplicationDbContext context)
         {
             return context.Commands;

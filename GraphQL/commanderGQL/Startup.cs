@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using GraphQL.Server.Ui.Voyager;
+using commanderGQL.GraphQL.Platforms;
 
 namespace commanderGQL
 {
@@ -35,6 +36,7 @@ namespace commanderGQL
             services.AddPooledDbContextFactory<ApplicationDbContext>(options => {
                 options
                     .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))
+                    .EnableSensitiveDataLogging()
                     .UseSqlServer(Configuration.GetConnectionString("default"));
             });
 
@@ -44,7 +46,13 @@ namespace commanderGQL
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
-                .AddProjections();  //use to add UseProjection in qurey.cs
+                .AddType<PlatformType>()
+                .AddType<CommandTypes>()
+                // .AddType<PlTypes>()
+                // .AddProjections()  //use to add UseProjection in qurey.cs
+                .AddFiltering()
+                .AddSorting()
+                .AddMutationType<Mutations>()
                 ;
 
         }
