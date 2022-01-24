@@ -4,7 +4,7 @@ using HotChocolate;
 
 namespace commanderGQL.Models
 {
-   [GraphQLDescription("")]
+   [GraphQLDescription("Platforms")]
     public record Platform 
     {
         [Required]

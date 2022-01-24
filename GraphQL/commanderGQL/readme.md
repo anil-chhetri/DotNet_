@@ -11,6 +11,8 @@
   - [Adding Graphql description in EF core Models.](#adding-graphql-description-in-ef-core-models)
   - [Adding Graphql description in types](#adding-graphql-description-in-types)
   - [Mutations](#mutations)
+  - [GraphQl Queries:](#graphql-queries)
+  - [Diagram using Voyager UI.](#diagram-using-voyager-ui)
 
 
 <br>
@@ -268,13 +270,66 @@ services
   ;
 ```
 
+## GraphQl Queries: 
+All queries are send to Server using Http POST method.
+
+**Getting platforms**
+```graphql 
+query {
+	platforms {
+		id
+		name
+	}
+}
+```
 
 
+**Getting related class as well (it uses Project functionality)**
+```graphql
+query{
+	platforms{
+		name
+		commands {
+			howTo
+			commandText
+		}
+	}
+}
+```
+
+**parallel queries** (fails in case of Dbcontext only data service, we should use pooled context)
+```graphql
+query {
+	a: platforms {
+		id
+		name
+	}
+	b: platforms {
+		id
+		name
+	}
+	c: platforms {
+		id
+		name
+	}
+}
+```
+
+**Mutations**
+```graphql
+mutation {
+	addCommand(input: { howto: "preform directory Listing", commandtext: "ls -la", platformId: 4}) {
+		command {
+			howTo, 
+			commandText,
+			platform{
+				id
+			}
+		}
+	}
+}
+```
 
 
-
-
-
-
-
-
+## Diagram using Voyager UI.
+![image](./Screenshot%202022-01-24%20150945.png)
