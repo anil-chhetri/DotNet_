@@ -34,7 +34,6 @@ namespace LinqExamples
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.
         }
     }
 

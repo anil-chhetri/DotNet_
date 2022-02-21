@@ -52,24 +52,22 @@ namespace LinqExamples
             Console.WriteLine("getting distinct.");
 
             //getting distinct values of subjects
-            Students.GetAllStudents().SelectMany(x => x.Subjects).Distinct().ToList().ForEach(c => Console.WriteLine(c));
-
-
+            Students.GetAllStudents().SelectMany(x => x.Subjects)
+            .Distinct()
+            .ToList().ForEach(c => Console.WriteLine(c));
 
             Console.WriteLine("distinct with query string.");
             (from student in Students.GetAllStudents()
             from subject in student.Subjects
              select subject).Distinct().ToList().ForEach(x => Console.WriteLine(x));
 
-
-
             Console.WriteLine();
             Console.WriteLine();
 
-            Students.GetAllStudents().SelectMany(s => s.Subjects,
+            var result1 = Students.GetAllStudents().SelectMany(s => s.Subjects,
                                                 (student, subject) =>
-                                                            new { StudentName = student.Name, subjectName = subject })
-                .ToList().ForEach(r => Console.WriteLine(r.StudentName + " - " + r.subjectName));
+                                                new { StudentName = student.Name, subjectName = subject });
+            result1.ToList().ForEach(r => Console.WriteLine(r.StudentName + " - " + r.subjectName));
 
 
 
