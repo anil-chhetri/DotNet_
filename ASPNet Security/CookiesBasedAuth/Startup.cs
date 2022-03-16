@@ -45,6 +45,14 @@ namespace CookiesBasedAuth
                 options.SignIn.RequireConfirmedEmail = true;
             });
 
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/identity/login";
+                options.AccessDeniedPath = "/identity/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+            });
+
             services.Configure<SmtpSettings>(Configuration.GetSection(nameof(SmtpSettings)));
             services.AddSingleton<IEmailSender, EmailSender>();
 
@@ -68,22 +76,24 @@ namespace CookiesBasedAuth
 
             app.UseHttpsRedirection();
 
-            app.Use(async (context, next) =>
-          {
-              Console.WriteLine("checking migrations...");
-              var dbcontext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
-              if (dbcontext.Database.GetPendingMigrations().Any())
-              {
-                  dbcontext.Database.Migrate();
-              }
+            //     app.Use(async (context, next) =>
+            //   {
+            //       Console.WriteLine("checking migrations...");
+            //       var dbcontext = context.RequestServices.GetRequiredService<ApplicationDbContext>();
+            //       if (dbcontext.Database.GetPendingMigrations().Any())
+            //       {
+            //           dbcontext.Database.Migrate();
+            //       }
 
-              await next();
-          });
+            //       await next();
+            //       Console.WriteLine("done checking Mirations");
+            //   });
 
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

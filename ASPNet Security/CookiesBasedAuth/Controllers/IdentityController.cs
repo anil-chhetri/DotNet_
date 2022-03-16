@@ -10,12 +10,16 @@ namespace CookiesBasedAuth.Controllers
     public class IdentityController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
         private readonly IEmailSender emailSender;
 
-        public IdentityController(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public IdentityController(UserManager<IdentityUser> userManager,
+                                  SignInManager<IdentityUser> signInManager,
+                                  IEmailSender emailSender)
         {
             this.emailSender = emailSender;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
 
@@ -49,12 +53,10 @@ namespace CookiesBasedAuth.Controllers
             };
 
             var result = await userManager.CreateAsync(identity, model.Password);
-            user = await userManager.FindByEmailAsync(model.Email);
-
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-
             if (result.Succeeded)
             {
+                user = await userManager.FindByEmailAsync(model.Email);
+                var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink = Url.Action("ConfirmEmail", "Identity", new { userId = user.Id, token = token });
                 await emailSender.SendEmailAsync("info@test.com", user.Email, "Confirm your email address", confirmationLink);
                 return RedirectToAction("signin");
@@ -71,17 +73,31 @@ namespace CookiesBasedAuth.Controllers
 
         public IActionResult Login()
         {
-            return View();
+            var model = new LoginViewModel();
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.password, true, false);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("login", "Email or Passowrd Incorrect");
+                }
+            }
+            return View(model);
         }
 
 
-        private async Task<IActionResult> ConfirmEmail(string userId, string token)
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             var user = await userManager.FindByIdAsync(userId);
 
@@ -91,6 +107,18 @@ namespace CookiesBasedAuth.Controllers
                 return RedirectToAction(nameof(Login));
             }
             return NotFound();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> LogOut()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var UserMail = User.Identity.Name;
+                await signInManager.SignOutAsync();
+            }
+            return RedirectToAction("login", "identity");
         }
     }
 }
